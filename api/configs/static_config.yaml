@@ -50,10 +50,11 @@ components_manager:
             throttling_enabled: false
             url_trailing_slash: strict-match
 
-        handler-hello:                    # Finally! Our handler.
-            path: /v1/hello               # Registering handler by URL '/v1/hello'.
-            method: POST                  # It will only reply to POST requests.
-            task_processor: main-task-processor  # Run it on CPU bound task processor
+        handler-v1-audio-compressor:
+            path: /v1/compress-audio
+            method: POST
+            task_processor: main-task-processor
+            max_request_size: 20971520 #  20Mib
 
         postgres-db-1:
             dbconnection: $dbconnection
