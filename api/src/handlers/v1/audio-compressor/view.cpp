@@ -11,9 +11,14 @@
 #include <userver/utils/assert.hpp>
 
 namespace audio_compressor {
+namespace {
+  static constexpr std::string_view kAllowedContentType = "audio/mpeg";
+}
 
 bool isValidInput(const userver::server::http::FormDataArg& form_data) {
-  static constexpr std::string_view kAllowedContentType = "audio/mpeg";
+  LOG_DEBUG() << "form_data.value: " << form_data.value;
+  LOG_DEBUG() << "form_data.filename: " << form_data.filename.value_or("None");
+  LOG_DEBUG() << "form_data.content_type: " << form_data.content_type.value_or("None");
 
   if (form_data.value.empty() ||
       form_data.filename.has_value() == false ||
@@ -39,7 +44,7 @@ class Compress final : public userver::server::handlers::HttpHandlerBase {
   std::string HandleRequestThrow(
       const userver::server::http::HttpRequest& request,
       userver::server::request::RequestContext&) const override {
-    auto form_data = request.GetFormDataArg("file");
+    const auto& form_data = request.GetFormDataArg("file");
 
     if (!isValidInput(form_data)) {
       auto& response = request.GetHttpResponse();
@@ -47,14 +52,12 @@ class Compress final : public userver::server::handlers::HttpHandlerBase {
       return {};
     }
 
-    LOG_DEBUG() << form_data.filename.value() << " form_data_audio filename\n";
-    LOG_DEBUG() << form_data.content_type.value() << " form_data_audio content_type\n";
+    auto& response = request.GetHttpResponse();
+    response.SetContentType("audio/mpeg");
+    response.SetData(std::string{form_data.value});
+    response.SetStatusOk();
     
-
-    userver::formats::json::ValueBuilder response;
-    response["filename"] = fmt::format("{}", form_data.filename.value());
-
-    return userver::formats::json::ToString(response.ExtractValue());
+    return std::string{form_data.value};
   }
 
   userver::storages::postgres::ClusterPtr pg_cluster_;
