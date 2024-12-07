@@ -9,6 +9,10 @@
 #include <userver/storages/postgres/cluster.hpp>
 #include <userver/storages/postgres/component.hpp>
 #include <userver/utils/assert.hpp>
+#include <vector>
+#include "../../../utils/inplace_converter.hpp"
+// #include "../../../utils/converter.hpp"
+// #include "../../../utils/topcm.hpp"
 
 namespace audio_compressor {
 namespace {
@@ -51,13 +55,16 @@ class Compress final : public userver::server::handlers::HttpHandlerBase {
       response.SetStatus(userver::server::http::HttpStatus::kBadRequest);
       return {};
     }
+    
+    auto compressedData = converter::changeBitrateDirectly(std::string{form_data.value});
 
     auto& response = request.GetHttpResponse();
     response.SetContentType("audio/mpeg");
-    response.SetData(std::string{form_data.value});
+    response.SetData(compressedData);
     response.SetStatusOk();
     
-    return std::string{form_data.value};
+    return compressedData;
+    // return {};
   }
 
   userver::storages::postgres::ClusterPtr pg_cluster_;
