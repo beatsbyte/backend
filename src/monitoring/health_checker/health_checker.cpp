@@ -18,7 +18,6 @@ HealthChecker::HealthChecker(const userver::components::ComponentConfig& config,
                                              {}                         
                                          },
                      [this]() {
-                    //   std::cout<<"Hello from periodic_task" <<std::endl;
                        this->SendImAlive("http://192.168.0.60:8080/v1/imalive");
                      }) {
 
