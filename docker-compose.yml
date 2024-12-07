@@ -17,7 +17,9 @@ services:
           - postgres
 
     pg_service_template-container:
-        image: ghcr.io/userver-framework/ubuntu-22.04-userver-pg:latest
+        build:
+          context: .
+          dockerfile: Dockerfile
         privileged: true
         environment:
           <<: *db_env
