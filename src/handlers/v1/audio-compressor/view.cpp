@@ -16,10 +16,6 @@ namespace {
 }
 
 bool isValidInput(const userver::server::http::FormDataArg& form_data) {
-  LOG_DEBUG() << "form_data.value: " << form_data.value;
-  LOG_DEBUG() << "form_data.filename: " << form_data.filename.value_or("None");
-  LOG_DEBUG() << "form_data.content_type: " << form_data.content_type.value_or("None");
-
   if (form_data.value.empty() ||
       form_data.filename.has_value() == false ||
       form_data.content_type.value() != kAllowedContentType) {
