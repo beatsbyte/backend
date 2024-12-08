@@ -11,13 +11,16 @@ namespace healthcheck {
 
 class HealthChecker : public userver::components::LoggableComponentBase {
  public:
+  std::string balancer_url;  
+  std::string own_url;
+
   static constexpr std::string_view kName = "health-checker";
 
   HealthChecker(const userver::components::ComponentConfig& config,
                 const userver::components::ComponentContext& context);
   ~HealthChecker();
 
-  void SendImAlive(const std::string& url);
+  void SendImAlive();
 
  private:
   userver::clients::http::Client& client_;

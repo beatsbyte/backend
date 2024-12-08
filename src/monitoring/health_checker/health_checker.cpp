@@ -10,32 +10,33 @@
 namespace healthcheck {
 
 HealthChecker::HealthChecker(const userver::components::ComponentConfig& config,
-                             const userver::components::ComponentContext& context)
+                             const userver::components::ComponentContext& context
+                            )
     : userver::components::LoggableComponentBase(config, context),
       client_(context.FindComponent<userver::components::HttpClient>().GetHttpClient()),
       periodic_task_("SendImAliveTask", userver::utils::PeriodicTask::Settings{
-                                             std::chrono::seconds(10),  
+                                             std::chrono::seconds(5),  
                                              {}                         
                                          },
                      [this]() {
-                    //   std::cout<<"Hello from periodic_task" <<std::endl;
-                       this->SendImAlive("http://192.168.0.60:8080/v1/imalive");
-                     }) {
-
+                       this->SendImAlive();
+                     }) {                 
+      balancer_url= std::getenv("BALANCER_URL");
+      own_url = std::getenv("OWN_URL");
 }
 
 HealthChecker::~HealthChecker() {
   periodic_task_.Stop();  
 }
 
-void HealthChecker::SendImAlive(const std::string& url) {
+void HealthChecker::SendImAlive() {
   try {
     userver::formats::json::ValueBuilder body;
-    body["url"] = "http://192.168.0.61:8080/v1/compress-audio";
+    body["url"] = own_url;
     auto bodyStr = userver::formats::json::ToString(body.ExtractValue());
 
     auto response = client_.CreateRequest()
-                        .put(url, bodyStr)
+                        .put(balancer_url, bodyStr)
                         .timeout(std::chrono::seconds(5))
                         .perform();
 
