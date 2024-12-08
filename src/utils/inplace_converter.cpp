@@ -36,7 +36,7 @@ int getBitrate(const std::string& filename) {
     return bitrate;
 }
 
-std::string changeBitrateDirectly(const std::string& inputMP3Data, int compress_degree = 1) {
+std::string changeBitrateDirectly(const std::string& inputMP3Data, int compress_degree = 0) {
     if (!(0 <= compress_degree && compress_degree <= 2)) {
         compress_degree = 0;
     }
