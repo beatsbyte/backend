@@ -26,8 +26,10 @@ userver_setup_environment()
 
 # Common sources
 add_library(${PROJECT_NAME}_objs OBJECT
-    src/handlers/v1/audio-compressor/view.cpp
     src/handlers/v1/audio-compressor/view.hpp
+    src/handlers/v1/audio-compressor/view.cpp
+    src/monitoring/health_checker/health_checker.hpp
+    src/monitoring/health_checker/health_checker.cpp
 )
 target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver::postgresql)
 

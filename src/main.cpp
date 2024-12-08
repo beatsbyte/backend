@@ -8,6 +8,7 @@
 #include <userver/utils/daemon_run.hpp>
 
 #include "handlers/v1/audio-compressor/view.hpp"
+#include "monitoring/health_checker/health_checker.hpp"
 
 int main(int argc, char* argv[]) {
   auto component_list =
@@ -20,6 +21,7 @@ int main(int argc, char* argv[]) {
           .Append<userver::clients::dns::Component>();
 
   audio_compressor::AppendAudioCompressor(component_list);
+  healthcheck::AppendHealthChecker(component_list);
 
   return userver::utils::DaemonMain(argc, argv, component_list);
 }
