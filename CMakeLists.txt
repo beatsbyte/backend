@@ -35,6 +35,7 @@ add_library(${PROJECT_NAME}_objs OBJECT
     src/monitoring/health_checker/health_checker.cpp
     src/utils/inplace_converter.hpp
     src/utils/inplace_converter.cpp
+    src/utils/lru_cache.hpp
 )
 target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver::postgresql)
 target_link_libraries(${PROJECT_NAME}_objs PRIVATE ${LAME_LIBRARIES})

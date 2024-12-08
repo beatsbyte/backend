@@ -1,6 +1,9 @@
 #include "inplace_converter.hpp"
 
 namespace converter {
+int getBitrate(const std::string& filename) {
+    return 64;
+}
 
 int getMP3Bitrate(mpg123_handle* mh) {
     mpg123_frameinfo frameInfo;
@@ -12,7 +15,7 @@ int getMP3Bitrate(mpg123_handle* mh) {
     }
 }
 
-std::string changeBitrateDirectly(const std::string& inputMP3Data) {
+std::string changeBitrateDirectly(const std::string& inputMP3Data, int compress_degree) {
     // Initialize mpg123
     mpg123_init();
     mpg123_handle* mh = mpg123_new(nullptr, nullptr);
