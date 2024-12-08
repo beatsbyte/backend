@@ -36,6 +36,8 @@ add_library(${PROJECT_NAME}_objs OBJECT
     src/utils/inplace_converter.hpp
     src/utils/inplace_converter.cpp
     src/utils/lru_cache.hpp
+    src/utils/shazam_api.hpp
+    src/utils/shazam_api.cpp
 )
 target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver::postgresql)
 target_link_libraries(${PROJECT_NAME}_objs PRIVATE ${LAME_LIBRARIES})
