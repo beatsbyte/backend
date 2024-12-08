@@ -31,6 +31,8 @@ find_package(MPG REQUIRED)
 add_library(${PROJECT_NAME}_objs OBJECT
     src/handlers/v1/audio-compressor/view.hpp
     src/handlers/v1/audio-compressor/view.cpp
+    src/monitoring/health_checker/health_checker.hpp
+    src/monitoring/health_checker/health_checker.cpp
     src/utils/inplace_converter.hpp
     src/utils/inplace_converter.cpp
     src/utils/lru_cache.hpp
