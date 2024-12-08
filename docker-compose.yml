@@ -26,6 +26,8 @@ services:
           PREFIX: ${PREFIX:-~/.local}
           CCACHE_DIR: /pg_service_template/.ccache
           CORES_DIR: /cores
+          OWN_URL: http://192.168.0.62:8080/v1/compress-audio
+          BALANCER_URL: http://192.168.0.61:8080/v1/imalive
         volumes:
           - .:/pg_service_template:rw
           - ${TC_CORES_DIR:-./.cores}:/cores:rw
