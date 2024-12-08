@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(pg_service_template CXX)
 
-
 # Adding userver dependency
 find_package(userver COMPONENTS core postgresql QUIET)
 if(NOT userver_FOUND)  # Fallback to subdirectory usage
@@ -23,6 +22,10 @@ endif()
 
 userver_setup_environment()
 
+# Add lame and mgp123 libraries
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+find_package(LAME REQUIRED)
+find_package(MPG REQUIRED)
 
 # Common sources
 add_library(${PROJECT_NAME}_objs OBJECT
@@ -30,33 +33,18 @@ add_library(${PROJECT_NAME}_objs OBJECT
     src/handlers/v1/audio-compressor/view.cpp
     src/monitoring/health_checker/health_checker.hpp
     src/monitoring/health_checker/health_checker.cpp
+    src/utils/inplace_converter.hpp
+    src/utils/inplace_converter.cpp
 )
 target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver::postgresql)
+target_link_libraries(${PROJECT_NAME}_objs PRIVATE ${LAME_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_objs PRIVATE ${MPG123_LIBRARIES})
 
+include_directories(${PROJECT_SOURCE_DIR}/src)
 
 # The Service
 add_executable(${PROJECT_NAME} src/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
-
-
-# Unit Tests
-# add_executable(${PROJECT_NAME}_unittest
-#     src/hello_test.cpp
-# )
-# target_link_libraries(${PROJECT_NAME}_unittest PRIVATE ${PROJECT_NAME}_objs userver::utest)
-# add_google_tests(${PROJECT_NAME}_unittest)
-
-
-# Benchmarks
-# add_executable(${PROJECT_NAME}_benchmark
-#     src/hello_benchmark.cpp
-# )
-# target_link_libraries(${PROJECT_NAME}_benchmark PRIVATE ${PROJECT_NAME}_objs userver::ubench)
-# add_google_benchmark_tests(${PROJECT_NAME}_benchmark)
-
-
-# Functional Tests
-userver_testsuite_add_simple()
 
 
 # Install
