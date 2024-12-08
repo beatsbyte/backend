@@ -12,7 +12,7 @@ int getMP3Bitrate(mpg123_handle* mh) {
     }
 }
 
-int getBitrate(const std::string& filename) {
+int getBitrate(const std::string& binaryData) {
     mpg123_init();
     mpg123_handle* mh = mpg123_new(nullptr, nullptr);
     if (!mh) {
@@ -21,15 +21,37 @@ int getBitrate(const std::string& filename) {
         return -1;
     }
 
-    if (mpg123_open(mh, filename.c_str()) != MPG123_OK) {
-        std::cerr << "Failed to open file: " << filename << '\n';
+    if (mpg123_open_feed(mh) != MPG123_OK) {
+        std::cerr << "Failed to initialize feed mode for mpg123.\n";
+        mpg123_delete(mh);
+        mpg123_exit();
+        return -1;
+    }
+
+    // Feed the binary data into mpg123
+    if (mpg123_feed(mh, reinterpret_cast<const unsigned char*>(binaryData.data()), binaryData.size()) != MPG123_OK) {
+        std::cerr << "Failed to feed binary data.\n";
+        mpg123_delete(mh);
+        mpg123_exit();
+        return -1;
+    }
+
+    // Decode until we have enough data to determine bitrate
+    unsigned char buffer[8192];
+    size_t done = 0;
+    int err;
+    while ((err = mpg123_read(mh, buffer, sizeof(buffer), &done)) == MPG123_OK) {
+        // Keep reading to process data
+    }
+
+    if (err != MPG123_DONE && err != MPG123_NEW_FORMAT) {
+        std::cerr << "Error while decoding binary data: " << mpg123_strerror(mh) << '\n';
         mpg123_delete(mh);
         mpg123_exit();
         return -1;
     }
 
     int bitrate = getMP3Bitrate(mh);
-    mpg123_close(mh);
     mpg123_delete(mh);
     mpg123_exit();
 
