@@ -9,10 +9,8 @@
 #include <userver/storages/postgres/cluster.hpp>
 #include <userver/storages/postgres/component.hpp>
 #include <userver/utils/assert.hpp>
-#include <vector>
+
 #include "../../../utils/inplace_converter.hpp"
-// #include "../../../utils/converter.hpp"
-// #include "../../../utils/topcm.hpp"
 
 namespace audio_compressor {
 namespace {
