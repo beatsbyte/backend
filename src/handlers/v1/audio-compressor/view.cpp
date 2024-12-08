@@ -55,7 +55,8 @@ class Compress final : public userver::server::handlers::HttpHandlerBase {
 
     const auto& filename = form_data.filename.value();
     const auto bitrate = converter::getBitrate(filename);
-    const auto filename_with_bitrate = std::to_string(bitrate) + filename; 
+    const auto filename_with_bitrate = std::to_string(bitrate) + std::string(filename) +
+                                         std::string(compress_degree.value);
     std::string compressedData;
 
     // Проверяем, есть ли результат в кэше
@@ -67,6 +68,7 @@ class Compress final : public userver::server::handlers::HttpHandlerBase {
       compressedData = converter::changeBitrateDirectly(
         std::string{form_data.value},
         atoi(std::string{compress_degree.value}.c_str()));
+
       cache_.Put(filename_with_bitrate, compressedData);
     }
 
